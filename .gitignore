@@ -1,4 +1,21 @@
+# Node / frontend
 node_modules/
+frontend/dist/
+
+# Java / Spring Boot
 target/
 build/
+
+# Environment
 .env
+
+# Logs
+*.log
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
