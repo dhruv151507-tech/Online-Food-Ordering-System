@@ -20,4 +20,21 @@ public class User {
     private String password;
     // ADMIN or USER
     private String role;
+    private boolean emailVerified = false;
+    @Column(unique = true)
+    private String email;
+    public boolean isEmailVerified() {
+    return emailVerified;
+}
+
+public void setEmailVerified(boolean emailVerified) {
+    this.emailVerified = emailVerified;
+}
+public String getEmail() {
+    return email;
+}
+
+public void setEmail(String email) {
+    this.email = email;
+}
 }

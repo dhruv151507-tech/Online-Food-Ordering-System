@@ -20,18 +20,18 @@ public class JwtFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
+protected boolean shouldNotFilter(HttpServletRequest request) {
 
-        String path = request.getServletPath();
+    String path = request.getServletPath();
 
-        // 🔥 Allow preflight (CORS) requests
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            return true;
-        }
-
-        // 🔥 Allow public APIs
-        return path.equals("/api/user/login") || path.equals("/api/user/register");
+    // ✅ Allow CORS preflight
+    if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+        return true;
     }
+
+    // ✅ Allow ALL auth endpoints
+    return path.startsWith("/api/auth/");
+}
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

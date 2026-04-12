@@ -15,12 +15,16 @@ import java.util.List;
 public class OrderService {
 @Autowired
 private UserRepository userRepository;
-    @Autowired
-    private OrderRepository orderRepository;
+@Autowired
+private OrderRepository orderRepository;
+
     public List<Order> getAllOrders() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-
+// checks the role of current logged-in user and return orders accordingly
+// getAuthorities() → get roles
+// anyMatch() → check if role exists
+// "ROLE_ADMIN" → admin check
         boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(grantedAuthority -> "ROLE_ADMIN".equals(grantedAuthority.getAuthority()));
 
