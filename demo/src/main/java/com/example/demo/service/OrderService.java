@@ -7,6 +7,7 @@ import com.example.demo.model.User;
 import com.example.demo.repository.MenuRepository;
 import com.example.demo.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 // import com.example.demo.model.User;
 import java.util.List;
@@ -39,10 +40,17 @@ private OrderRepository orderRepository;
     private MenuRepository menuRepository;
 //placeorder and get price summary
    public Order placeOrder(Order order) {
+    if (order.getItems() == null || order.getItems().isEmpty()) {
+        throw new RuntimeException("Order must contain at least one item");
+    }
 
     double total = 0;
 
     for (OrderItem item : order.getItems()) {
+        if (item.getQuantity() <= 0) {
+            throw new RuntimeException("Item quantity must be greater than zero");
+        }
+
         double price = menuRepository.findById(item.getMenuId())
                 .orElseThrow(() -> new RuntimeException("Item not found"))
                 .getPrice();
@@ -53,7 +61,7 @@ private OrderRepository orderRepository;
     order.setTotalPrice(total);
     order.setStatus("Pending");
 
-    // 🔥 ADD THIS PART
+    //  ADD THIS PART
     String username = SecurityContextHolder.getContext()
             .getAuthentication()
             .getName();
@@ -77,11 +85,27 @@ private OrderRepository orderRepository;
     }
 //get order by id logic
     public Order getOrderById(Long id) {
-        return orderRepository.findById(id)
+        Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> "ROLE_ADMIN".equals(grantedAuthority.getAuthority()));
+
+        if (isAdmin || (order.getUser() != null && username.equals(order.getUser().getUsername()))) {
+            return order;
+        }
+
+        throw new AccessDeniedException("You are not allowed to view this order");
     }
 //    delete order
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
     }
+    // get total orders per day
+    public List<Object[]> getOrdersPerDay() {
+    return orderRepository.getOrdersPerDay();
+}
 }

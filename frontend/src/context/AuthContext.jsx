@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }) => {
       let message = "Registration failed. Username may be taken.";
 
       if (error.response?.status === 400) {
-        message = "username should be in proper format";
+        message = "Username already exists";
       } else {
         message = extractErrorMessage(error, message);
       }

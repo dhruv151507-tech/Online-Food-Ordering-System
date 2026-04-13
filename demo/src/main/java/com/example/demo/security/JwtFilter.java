@@ -24,12 +24,12 @@ protected boolean shouldNotFilter(HttpServletRequest request) {
 
     String path = request.getServletPath();
 
-    // ✅ Allow CORS preflight
+    //  Allow CORS preflight
     if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
         return true;
     }
 
-    // ✅ Allow ALL auth endpoints
+    //  Allow ALL auth endpoints
     return path.startsWith("/api/auth/");
 }
 
@@ -59,7 +59,7 @@ protected boolean shouldNotFilter(HttpServletRequest request) {
                 SecurityContextHolder.getContext().setAuthentication(auth);
 
             } catch (Exception e) {
-                // 🔥 DO NOT BLOCK → continue request
+                //  DO NOT BLOCK → continue request
                 filterChain.doFilter(request, response);
                 return;
             }
