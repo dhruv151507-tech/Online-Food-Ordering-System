@@ -1,7 +1,22 @@
 import axios from "axios";
 
+const normalizeBaseUrl = (value) => value?.replace(/\/+$/, "") || "";
+
+const resolveApiBaseUrl = () => {
+  const configuredBaseUrl = normalizeBaseUrl(import.meta.env.VITE_API_URL);
+
+  if (configuredBaseUrl) {
+    return `${configuredBaseUrl}/api`;
+  }
+
+  console.warn(
+    "VITE_API_URL is not configured. Set it to your deployed backend URL in Render.",
+  );
+  return "/api";
+};
+
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api`,
+  baseURL: resolveApiBaseUrl(),
 });
 
 api.interceptors.request.use((config) => {

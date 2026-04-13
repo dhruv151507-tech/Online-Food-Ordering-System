@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin
 public class UserController {
     @Autowired
     private UserService service;
@@ -60,8 +59,21 @@ public String verifyEmail(@RequestParam String otp) {
 
     // Login
     @PostMapping("/login")
-    public String login(@RequestParam String username,
-                        @RequestParam String password) {
+    public String login(@RequestParam(required = false) String username,
+                        @RequestParam(required = false) String password,
+                        @RequestBody(required = false) Map<String, String> body) {
+
+        if ((username == null || username.isBlank()) && body != null) {
+            username = body.get("username");
+        }
+
+        if ((password == null || password.isBlank()) && body != null) {
+            password = body.get("password");
+        }
+
+        if (username == null || username.isBlank() || password == null || password.isBlank()) {
+            throw new RuntimeException("Username and password are required");
+        }
 
         User user = service.login(username, password);
 

@@ -16,9 +16,9 @@ const Login = () => {
     setError('');
     setLoading(true);
     
-    const success = await login(username, password);
-    if (!success) {
-      setError('Invalid username or password');
+    const response = await login(username, password);
+    if (!response.success) {
+      setError(response.message || 'Invalid username or password');
       setLoading(false);
     }
   };

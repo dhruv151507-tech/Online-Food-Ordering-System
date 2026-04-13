@@ -38,10 +38,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      // Backend expects RequestParams, so we send it as form data or query params
-      const response = await api.post(
-        `/auth/login?username=${username}&password=${password}`,
-      );
+      const response = await api.post("/auth/login", { username, password });
       const token = response.data; // token string
 
       // Since we don't have an endpoint to get user details without doing JWT decode
@@ -69,10 +66,13 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("username", username);
 
       setUser({ token, role: userRole, username });
-      return true;
+      return { success: true };
     } catch (error) {
       console.error("Login error", error);
-      return false;
+      return {
+        success: false,
+        message: extractErrorMessage(error, "Login failed."),
+      };
     }
   };
 
@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }) => {
       let message = "Registration failed. Username may be taken.";
 
       if (error.response?.status === 400) {
-        message = "Username already exists";
+        message = extractErrorMessage(error, message);
       } else {
         message = extractErrorMessage(error, message);
       }

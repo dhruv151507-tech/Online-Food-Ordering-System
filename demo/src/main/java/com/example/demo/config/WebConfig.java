@@ -1,11 +1,10 @@
 package com.example.demo.config;
 
+import java.io.File;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-
-import java.io.File;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -21,15 +20,5 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations(fileUri)
                 .setCachePeriod(3600)
                 .resourceChain(true);
-    }
-
-    // 🔥 ADD THIS METHOD (CORS FIX)
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("https://online-food-ordering-system-2.onrender.com")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
     }
 }
