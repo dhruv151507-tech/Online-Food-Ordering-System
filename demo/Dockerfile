@@ -2,8 +2,12 @@ FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-COPY target/*.jar app.jar
+# Copy everything
+COPY . .
 
-EXPOSE 8080
+# Install Maven and build jar
+RUN apt-get update && apt-get install -y maven
+RUN mvn clean package -DskipTests
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run app
+CMD ["java", "-jar", "target/demo-0.0.1-SNAPSHOT.jar"]
