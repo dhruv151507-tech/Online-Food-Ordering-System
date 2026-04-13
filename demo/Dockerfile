@@ -2,7 +2,11 @@ FROM maven:3.9-eclipse-temurin-21
 
 WORKDIR /app
 
+# Copy everything
 COPY . .
+
+# Move into demo folder (IMPORTANT FIX)
+WORKDIR /app/demo
 
 RUN mvn clean package -DskipTests
 
