@@ -32,7 +32,8 @@ const CustomerMenu = () => {
       return url;
     }
     const baseUrl =
-      api.defaults?.baseURL?.replace(/\/api$/, "") || "http://localhost:8080";
+      api.defaults?.baseURL?.replace(/\/api$/, "") ||
+      import.meta.env.VITE_API_URL;
     return `${baseUrl}${url}`;
   };
 
