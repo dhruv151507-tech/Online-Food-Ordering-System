@@ -54,8 +54,9 @@ public class UserService {
         try {
             emailService.sendEmail(
                 user.getEmail(),
-                "Email Verification OTP",
-                "Your OTP is: " + otp + "\nValid for 5 minutes."
+               "Email Verification OTP",
+                 "Hello " + user.getUsername() + ",\n\nYour OTP is: " + otp +
+                    "\nValid for 5 minutes.\n\n- Food Ordering Team"
             );
         } catch (Exception e) {
             System.out.println("Email failed: " + e.getMessage());
@@ -87,7 +88,7 @@ public class UserService {
 
         return "Email verified successfully!";
     }
-
+// resend OTP logic - deletes old token, creates new one, sends email again
     @Transactional
     public String resendOtp(String email) {
         User user = userRepository.findByEmail(email)
@@ -114,12 +115,12 @@ public class UserService {
                 "Your new OTP is: " + otp
             );
         } catch (Exception e) {
-            System.out.println("Email failed: " + e.getMessage());
-        }
+    e.printStackTrace();
+}
 
         return "New OTP sent successfully!";
     }
-
+// login logic - checks if email is verified before allowing login
     public User login(String username, String password) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
