@@ -4,29 +4,39 @@ import com.resend.Resend;
 import com.resend.services.emails.model.CreateEmailOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class EmailService {
-        @Value("${RESEND_API_KEY}")
+
+    @Value("${resend.api.key}")
     private String apiKey;
 
+    @Value("${resend.from-email}")
+    private String fromEmail;
 
     public void sendEmail(String to, String subject, String text) {
-         try {
-            Resend resend = new Resend(apiKey);
+        if (!StringUtils.hasText(apiKey)) {
+            throw new RuntimeException("Resend API key is not configured");
+        }
 
-            CreateEmailOptions params = CreateEmailOptions.builder()
-                    .from("onboarding@resend.dev")
-                    .to(to)
-                    .subject(subject)
-                    .text(text)
-                    .build();
+        if (!StringUtils.hasText(fromEmail)) {
+            throw new RuntimeException("Resend sender email is not configured");
+        }
 
+        Resend resend = new Resend(apiKey);
+
+        CreateEmailOptions params = CreateEmailOptions.builder()
+                .from(fromEmail)
+                .to(to)
+                .subject(subject)
+                .text(text)
+                .build();
+
+        try {
             resend.emails().send(params);
-            System.out.println("✅ Email sent to: " + to);
         } catch (Exception e) {
-          System.out.println("⚠️ Email sending failed (continuing anyway): " + e.getMessage());
-            // Don't throw - allow registration to proceed
+            throw new RuntimeException("Failed to send email via Resend: " + e.getMessage(), e);
         }
     }
 }
