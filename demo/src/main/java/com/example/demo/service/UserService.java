@@ -37,6 +37,10 @@ public class UserService {
             throw new RuntimeException("Email is required");
         }
 
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEmailVerified(false);
         userRepository.save(user);
@@ -46,6 +50,7 @@ public class UserService {
         String otp = String.valueOf((int) (Math.random() * 900000) + 100000);
 
         VerificationToken vt = new VerificationToken();
+        
         vt.setOtp(otp);
         vt.setUser(user);
         vt.setExpiryDate(LocalDateTime.now().plusMinutes(5));
