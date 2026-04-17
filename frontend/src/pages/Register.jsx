@@ -6,6 +6,7 @@ import { UserPlus } from "lucide-react";
 const Register = () => {
   const [formData, setFormData] = useState({
     username: "",
+    email: "",
     password: "",
     role: "USER", // default role
   });
@@ -25,7 +26,12 @@ const Register = () => {
     setMessage("");
     setLoading(true);
 
-    const response = await register(formData);
+    const payload = {
+      ...formData,
+      email: formData.email || formData.username,
+    };
+
+    const response = await register(payload);
     if (response.success) {
       setStep("verify");
       setMessage(
@@ -64,7 +70,7 @@ const Register = () => {
     setMessage("");
     setLoading(true);
 
-    const response = await resendOtp(formData.username);
+    const response = await resendOtp(formData.email || formData.username);
     if (response.success) {
       setMessage(response.message || "New OTP sent successfully!");
       setResendCountdown(30);
@@ -121,7 +127,11 @@ const Register = () => {
                 className="form-control"
                 value={formData.username}
                 onChange={(e) =>
-                  setFormData({ ...formData, username: e.target.value })
+                  setFormData({
+                    ...formData,
+                    username: e.target.value,
+                    email: e.target.value,
+                  })
                 }
                 required
                 placeholder="name@example.com"

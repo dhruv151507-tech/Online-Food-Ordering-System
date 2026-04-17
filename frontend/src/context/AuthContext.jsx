@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
       return { success: true, message: response.data };
     } catch (error) {
       console.error("Registration error", error);
-      let message = "Registration failed. Username may be taken.";
+      let message = "Registration failed.";
 
       if (error.response?.status === 400) {
         message = extractErrorMessage(error, message);
